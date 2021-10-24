@@ -1,0 +1,14 @@
+[Unit]
+Description=zram-swap-manager
+DefaultDependencies=no
+After=local-fs.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/zram-swap-manager -r
+ExecStop=/usr/local/bin/zram-swap-manager -f
+TimeoutStartSec=120
+RemainAfterExit=yes
+
+[Install]
+WantedBy=sysinit.target

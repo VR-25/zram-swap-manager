@@ -1,0 +1,10 @@
+Android LMK Presets
+  Parameters
+    foreground_apps
+    visible_apps
+    secondary_server
+    hidden_apps
+    content_providers
+    empty_apps
+  Formulas
+    1 MB = 256 units
