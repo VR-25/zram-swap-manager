@@ -16,9 +16,12 @@
 
     You should have received a copy of the GNU General Public License along with this program. If not, see https://www.gnu.org/licenses/.
 
+## Generate a Magisk Module Flashable Zip
+    sh /path/to/zip.sh
+
 ## Install/Upgrade
     Android (Magisk module)
-      su -c sh /path/to/install.sh [--start]
+      Flash the zip or run su -c sh /path/to/install.sh [--start]
 
     GNU/Linux
       sudo sh /path/to/install.sh [--start]
@@ -38,7 +41,7 @@
       /etc/zram-swap-manager.conf
 
 ## Terminal
-    zram-swap-manager --help
+    Run zsm or zram-swap-manager for help.
 
 ## Benchmarks
 |    Compressor	   | Ratio	| Compression | Decompression |
@@ -53,7 +56,7 @@
 |    lzf 3.6 -1	   | 2.077	|   400 MB/s	|   860 MB/s    |
 
 ## Donations
-- Airtm Username: ivandro863auzqg
+- [Airtm username: ivandro863auzqg](https://app.airtm.com/send-or-request/send)
 - [Liberapay](https://liberapay.com/vr25/)
 - [Patreon](https://patreon.com/vr25/)
 - [PayPal](https://paypal.me/vr25xda/)

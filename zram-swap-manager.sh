@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
-version="v2021.10.24-beta (202110240)"
+version="v2021.10.26-beta (202110260)"
 info="zRAM Swap Manager $version
 Copyright (C) 2021, VR25
 License: GPLv3+
@@ -135,8 +135,7 @@ do
   }
 done
 
-[ -f $magisk_mod/setup-busybox.sh ] \
-  && . $magisk_mod/setup-busybox.sh
+[ -f $magisk_mod/busybox.sh ] && . $magisk_mod/busybox.sh
 
 # default settings
 
@@ -160,7 +159,7 @@ done
 : ${low_load_threshold:=0}
 : ${low_load_swappiness:=100}
 
-: ${vm:=swappiness=$high_load_swappiness}
+: ${vm:=swappiness=80 vfs_cache_pressure=200}
 
 case $1 in
   -*c) shift; edit_config "$@";;

@@ -1,10 +1,3 @@
-# Busybox Setup
-# Copyright 2019-2020, VR25
-# License: GPLv3+
-#
-# Usage: . $0
-
-
 [ -x /dev/.vr25/busybox/ls ] || {
   mkdir -p /dev/.vr25/busybox
   chmod 0700 /dev/.vr25/busybox
