@@ -11,6 +11,11 @@ src="$(cd "${0%/*}" 2>/dev/null; echo "$PWD")"
 # for magisk
 SKIPUNZIP=1
 
+patch_cfg() {
+  [ -f $cfg ] || return 0
+  grep -Eq '^# :|mem_total' $cfg && install -m 644 $src/zram-swap-manager.conf $cfg
+}
+
 if [ -d /data/adb ]; then
 
   # android
@@ -29,6 +34,7 @@ if [ -d /data/adb ]; then
 
   install_dir=/data/adb/modules/zram-swap-manager
   data_dir=/data/adb/vr25/zram-swap-manager-data
+  cfg=/data/adb/vr25/zram-swap-manager-data/config.txt
 
   rm -rf $install_dir 2>/dev/null
   mkdir -p $install_dir/system/bin $data_dir
@@ -54,6 +60,9 @@ if [ -d /data/adb ]; then
   cp busybox.sh module.prop service.sh $install_dir/
   cd "$i"
   unset i
+
+  patch_cfg
+
   chmod +x $install_dir/*.sh
   [ ".$1" != .--start ] || $install_dir/service.sh
 
@@ -61,7 +70,9 @@ else
 
   # gnu/linux
 
+  cfg=/etc/zram-swap-manager.conf
   [ -f /etc/zram-swap-manager.conf ] && upgrade=true
+
   sh $src/uninstall.sh --keep-config >/dev/null 2>&1
   mkdir -p /usr/local/bin/
 
@@ -72,6 +83,8 @@ else
 
   ${upgrade:-false} || install -m 644 $src/zram-swap-manager.conf /etc/
   install -m 755 $src/uninstall.sh /usr/local/bin/zram-swap-manager-uninstall
+
+  patch_cfg
 
   systemctl enable zram-swap-manager
   [ ".$1" != .--start ] || zram-swap-manager -r

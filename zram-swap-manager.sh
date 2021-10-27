@@ -1,11 +1,12 @@
 #!/usr/bin/env sh
 
-version="v2021.10.26-beta (202110260)"
+version="v2021.10.27-beta (202110270)"
 info="zRAM Swap Manager $version
 Copyright (C) 2021, VR25
 License: GPLv3+
 Donations: airtm:ivandro863auzqg liberapay.com/vr25 patreon.com/vr25 paypal.me/vr25xda"
 
+IFS="$(printf ' \t\n')"
 temp_dir=/dev/.vr25/zram-swap-manager
 magisk_mod=/data/adb/modules/zram-swap-manager
 mod_data=/data/adb/vr25/zram-swap-manager-data
@@ -18,7 +19,7 @@ edit_config() {
   config=/etc/zram-swap-manager.conf
   [ -f $config ] || config=$mod_data/config.txt
   if [ -n "$1" ]; then
-    eval "$@ $config"
+    eval "$* $config"
   else
     for i in $EDITOR vim vi nano; do
       type $i >/dev/null 2>&1 && {
