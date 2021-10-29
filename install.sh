@@ -12,8 +12,18 @@ src="$(cd "${0%/*}" 2>/dev/null; echo "$PWD")"
 SKIPUNZIP=1
 
 patch_cfg() {
-  [ -f $cfg ] || return 0
-  grep -Eq '^# :|mem_total' $cfg && install -m 644 $src/zram-swap-manager.conf $cfg
+  if [ -f $cfg ] && [ "$1" != r ]; then
+    if grep -Eq '^# :|mem_total' $cfg; then
+      patch_cfg r
+    else
+      config_ver=0$(sed -n '/^config_ver=/s/.*=//p' $cfg)
+      if [ $config_ver -lt 0202110290 ]; then
+        sed -i -e '1iconfig_ver=202110290\n' -e '/^comp_a/s/=.*/=auto/' -e '/^vm=/s/e=200\"/e=200 page-cluster=0\"/' $cfg
+      fi
+    fi
+  else
+    install -m 644 $src/zram-swap-manager.conf $cfg
+  fi
 }
 
 if [ -d /data/adb ]; then
@@ -71,7 +81,7 @@ else
   # gnu/linux
 
   cfg=/etc/zram-swap-manager.conf
-  [ -f /etc/zram-swap-manager.conf ] && upgrade=true
+  [ -f $cfg ] && upgrade=true
 
   sh $src/uninstall.sh --keep-config >/dev/null 2>&1
   mkdir -p /usr/local/bin/
@@ -81,7 +91,7 @@ else
   install -m 755 $src/zram-swap-manager.sh /usr/local/bin/zram-swap-manager
     ln -s /usr/local/bin/zram-swap-manager /usr/local/bin/zsm
 
-  ${upgrade:-false} || install -m 644 $src/zram-swap-manager.conf /etc/
+  ${upgrade:-false} || patch_cfg r
   install -m 755 $src/uninstall.sh /usr/local/bin/zram-swap-manager-uninstall
 
   patch_cfg

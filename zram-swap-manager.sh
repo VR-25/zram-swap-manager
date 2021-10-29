@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
-version="v2021.10.27-beta (202110270)"
+version="v2021.10.29-beta (202110290)"
 info="zRAM Swap Manager $version
 Copyright (C) 2021, VR25
 License: GPLv3+
@@ -22,7 +22,7 @@ edit_config() {
     eval "$* $config"
   else
     for i in $EDITOR vim vi nano; do
-      type $i >/dev/null 2>&1 && {
+      which ${i%% *} && {
         eval "$i $config"
         break
       }
@@ -51,6 +51,32 @@ mem_estimates() {
   unset total_mem_before total_mem_now net_gain net_gain_percent
 }
 
+prep_exec() {
+  [ -d /data/adb ] && {
+    mkswap() {
+      for exec in /data/adb/vr25/bin/mkswap /system/*bin/mkswap /sbin/mkswap "busybox mkswap"; do
+        [ -x ${exec%% *} ] && {
+          eval $exec "$@" && break || echo "(i) Trying alternative..."
+        }
+      done
+    }
+    swapoff() {
+      for exec in /data/adb/vr25/bin/swapoff /system/*bin/swapoff /sbin/swapoff "busybox swapoff"; do
+        [ -x ${exec%% *} ] && {
+          eval $exec "$@" && break || echo "(i) Trying alternative..."
+        }
+      done
+    }
+    swapon() {
+      for exec in /data/adb/vr25/bin/swapon /system/*bin/swapon /sbin/swapon "busybox swapon"; do
+        [ -x ${exec%% *} ] && {
+          eval $exec "$@" && break || echo "(i) Trying alternative..."
+        }
+      done
+    }
+  }
+}
+
 stop_swappinessd() {
   rm $temp_dir/*.lock 2>/dev/null
 }
@@ -73,6 +99,14 @@ swap_on() {
   i=$(hot_add)
   write /sys/module/zswap/parameters/enabled 0
   modprobe zram num_devices=1 2>/dev/null
+  grep -q $comp_algorithm /sys/block/zram$i/comp_algorithm || {
+    case "$(cat /sys/block/zram$i/comp_algorithm)" in
+      *zstd*) comp_algorithm=zstd; comp_ratio=288;;
+      *lz4*) comp_algorithm=lz4; comp_ratio=210;;
+      *lzo-rle*) comp_algorithm=lzo-rle; comp_ratio=212;;
+      *lzo*) comp_algorithm=lzo; comp_ratio=211;;
+    esac
+  }
   for j in max_comp_streams comp_algorithm disksize mem_limit; do
     eval write /sys/block/zram$i/$j \$$j
   done
@@ -140,7 +174,7 @@ done
 
 # default settings
 
-: ${comp_algorithm:=lz4}
+: ${comp_algorithm:=auto}
 : ${comp_ratio:=210}
 : ${mem_percent:=33}
 
@@ -160,15 +194,15 @@ done
 : ${low_load_threshold:=0}
 : ${low_load_swappiness:=100}
 
-: ${vm:=swappiness=80 vfs_cache_pressure=200}
+: ${vm:=swappiness=80 vfs_cache_pressure=200 page-cluster=0}
 
 case $1 in
   -*c) shift; edit_config "$@";;
   -*e) mem_estimates;;
-  -*n) swap_on;;
-  -*f) swap_off;;
+  -*n) prep_exec; swap_on;;
+  -*f) prep_exec; swap_off;;
   -*v) echo $version;;
-  -*r) swap_off 2>/dev/null; swap_on;;
+  -*r) prep_exec; swap_off 2>/dev/null; swap_on;;
   -*s) swappinessd;;
   -*t) stop_swappinessd; write /proc/sys/vm/swappiness $swappiness;;
   -*u) shift; $magisk_mod/uninstall.sh "$@" 2>/dev/null || zram-swap-manager-uninstall "$@";;

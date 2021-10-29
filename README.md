@@ -40,6 +40,28 @@
     GNU/Linux
       /etc/zram-swap-manager.conf
 
+## Default Config
+    config_ver=202110290 # used for patching; do not modify!
+
+    comp_algorithm=auto # [auto] -> zstd (288) | lz4 (210) | lzo-rle (212) | lzo (2011)
+    comp_ratio=210 # [210], irrelevant when comp_algorithm=auto
+    mem_percent=33 # [33], memory limit
+
+    dynamic_swappiness=true # [true], swappiness <--> /proc/loadavg
+    load_sampling_rate=60 # [60] read /proc/loadavg every x seconds
+    high_load_threshold=90 # [90], %
+    high_load_swappiness=80 # [80]
+    medium_load_threshold=45 # [45], %
+    medium_load_swappiness=90 # [90]
+    low_load_threshold=0 # [0], %
+    low_load_swappiness=100 # [100]
+
+    # [vm="swappiness=80 vfs_cache_pressure=200 page-cluster=0"]
+    vm="swappiness=80 vfs_cache_pressure=200 page-cluster=0"
+
+    # android's low memory killer (deprecated in favor of lmkd in recent OS versions)
+    # write /sys/module/lowmemorykiller/parameters/minfree "CUSTOM PARAMETERS GO HERE"
+
 ## Terminal
     Run zsm or zram-swap-manager for help.
 
