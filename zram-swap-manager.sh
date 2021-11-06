@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
-version="v2021.10.29-beta (202110290)"
+version="v2021.11.6-beta (202111060)"
 info="zRAM Swap Manager $version
 Copyright (C) 2021, VR25
 License: GPLv3+
@@ -22,7 +22,7 @@ edit_config() {
     eval "$* $config"
   else
     for i in $EDITOR vim vi nano; do
-      which ${i%% *} && {
+      which ${i%% *} >/dev/null && {
         eval "$i $config"
         break
       }
@@ -55,23 +55,23 @@ prep_exec() {
   [ -d /data/adb ] && {
     mkswap() {
       for exec in /data/adb/vr25/bin/mkswap /system/*bin/mkswap /sbin/mkswap "busybox mkswap"; do
-        [ -x ${exec%% *} ] && {
+        if [ -x ${exec%% *} ] || which ${exec%% *} >/dev/null; then
           eval $exec "$@" && break || echo "(i) Trying alternative..."
-        }
+        fi
       done
     }
     swapoff() {
       for exec in /data/adb/vr25/bin/swapoff /system/*bin/swapoff /sbin/swapoff "busybox swapoff"; do
-        [ -x ${exec%% *} ] && {
+        if [ -x ${exec%% *} ] || which ${exec%% *} >/dev/null; then
           eval $exec "$@" && break || echo "(i) Trying alternative..."
-        }
+        fi
       done
     }
     swapon() {
       for exec in /data/adb/vr25/bin/swapon /system/*bin/swapon /sbin/swapon "busybox swapon"; do
-        [ -x ${exec%% *} ] && {
+        if [ -x ${exec%% *} ] || which ${exec%% *} >/dev/null; then
           eval $exec "$@" && break || echo "(i) Trying alternative..."
-        }
+        fi
       done
     }
   }
