@@ -1,10 +1,9 @@
 #!/usr/bin/env sh
 
-version="v2021.11.6-beta (202111060)"
+version="v2021.11.23 (202111230)"
 info="zRAM Swap Manager $version
 Copyright (C) 2021, VR25
-License: GPLv3+
-Donations: airtm:ivandro863auzqg liberapay.com/vr25 patreon.com/vr25 paypal.me/vr25xda"
+License: GPLv3+"
 
 IFS="$(printf ' \t\n')"
 temp_dir=/dev/.vr25/zram-swap-manager
@@ -194,7 +193,7 @@ done
 : ${low_load_threshold:=0}
 : ${low_load_swappiness:=100}
 
-: ${vm:=swappiness=80 vfs_cache_pressure=200 page-cluster=0}
+: ${vm:=swappiness=80 page-cluster=0}
 
 case $1 in
   -*c) shift; edit_config "$@";;

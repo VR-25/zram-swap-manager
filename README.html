@@ -77,7 +77,7 @@ GNU/Linux
   /etc/zram-swap-manager.conf
 </code></pre>
 <h2 id="default-config">Default Config</h2>
-<pre><code>config_ver=202110290 # used for patching; do not modify!
+<pre><code>config_ver=202111230 # used for patching; do not modify!
 
 comp_algorithm=auto # [auto] -&gt; zstd (288) | lz4 (210) | lzo-rle (212) | lzo (2011)
 comp_ratio=210 # [210], irrelevant when comp_algorithm=auto
@@ -92,8 +92,7 @@ medium_load_swappiness=90 # [90]
 low_load_threshold=0 # [0], %
 low_load_swappiness=100 # [100]
 
-# [vm=&quot;swappiness=80 vfs_cache_pressure=200 page-cluster=0&quot;]
-vm=&quot;swappiness=80 vfs_cache_pressure=200 page-cluster=0&quot;
+vm=&quot;swappiness=80 page-cluster=0&quot;
 
 # android's low memory killer (deprecated in favor of lmkd in recent OS versions)
 # write /sys/module/lowmemorykiller/parameters/minfree &quot;CUSTOM PARAMETERS GO HERE&quot;
@@ -164,10 +163,10 @@ vm=&quot;swappiness=80 vfs_cache_pressure=200 page-cluster=0&quot;
 </table>
 <h2 id="donations">Donations</h2>
 <ul>
-<li><a href="https://app.airtm.com/send-or-request/send">Airtm username: ivandro863auzqg</a></li>
+<li><a href="https://app.airtm.com/send-or-request/send">Airtm, username: ivandro863auzqg</a></li>
 <li><a href="https://liberapay.com/vr25/">Liberapay</a></li>
 <li><a href="https://patreon.com/vr25/">Patreon</a></li>
-<li><a href="https://paypal.me/vr25xda/">PayPal</a></li>
+<li><a href="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&amp;business=iprj25@gmail.com&amp;lc=US&amp;item_name=VR25+is+creating+free+and+open+source+software.+Donate+to+suppport+their+work.&amp;no_note=0&amp;cn=&amp;currency_code=USD&amp;bn=PP-DonationsBF:btn_donateCC_LG.gif:NonHosted">PayPal or Credit/Debit Card</a></li>
 </ul>
 
     </body>

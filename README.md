@@ -41,7 +41,7 @@
       /etc/zram-swap-manager.conf
 
 ## Default Config
-    config_ver=202110290 # used for patching; do not modify!
+    config_ver=202111230 # used for patching; do not modify!
 
     comp_algorithm=auto # [auto] -> zstd (288) | lz4 (210) | lzo-rle (212) | lzo (2011)
     comp_ratio=210 # [210], irrelevant when comp_algorithm=auto
@@ -56,8 +56,7 @@
     low_load_threshold=0 # [0], %
     low_load_swappiness=100 # [100]
 
-    # [vm="swappiness=80 vfs_cache_pressure=200 page-cluster=0"]
-    vm="swappiness=80 vfs_cache_pressure=200 page-cluster=0"
+    vm="swappiness=80 page-cluster=0"
 
     # android's low memory killer (deprecated in favor of lmkd in recent OS versions)
     # write /sys/module/lowmemorykiller/parameters/minfree "CUSTOM PARAMETERS GO HERE"
@@ -78,7 +77,7 @@
 |    lzf 3.6 -1	   | 2.077	|   400 MB/s	|   860 MB/s    |
 
 ## Donations
-- [Airtm username: ivandro863auzqg](https://app.airtm.com/send-or-request/send)
+- [Airtm, username: ivandro863auzqg](https://app.airtm.com/send-or-request/send)
 - [Liberapay](https://liberapay.com/vr25/)
 - [Patreon](https://patreon.com/vr25/)
-- [PayPal](https://paypal.me/vr25xda/)
+- [PayPal or Credit/Debit Card](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=iprj25@gmail.com&lc=US&item_name=VR25+is+creating+free+and+open+source+software.+Donate+to+suppport+their+work.&no_note=0&cn=&currency_code=USD&bn=PP-DonationsBF:btn_donateCC_LG.gif:NonHosted)
