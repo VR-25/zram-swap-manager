@@ -1,7 +1,8 @@
 #!/usr/bin/env sh
 
-version="v2021.11.23 (202111230)"
+version="v2021.12.2 (202112020)"
 info="zRAM Swap Manager $version
+Upstream repo: github.com/vr-25/zram-swap-manager
 Copyright (C) 2021, VR25
 License: GPLv3+"
 
@@ -53,31 +54,39 @@ mem_estimates() {
 prep_exec() {
   [ -d /data/adb ] && {
     mkswap() {
-      for exec in /data/adb/vr25/bin/mkswap /system/*bin/mkswap /sbin/mkswap "busybox mkswap"; do
-        if [ -x ${exec%% *} ] || which ${exec%% *} >/dev/null; then
-          eval $exec "$@" && break || echo "(i) Trying alternative..."
+      for exec in /data/adb/vr25/bin/mkswap /*/*bin/mkswap /sbin/mkswap mkswap; do
+        if [ -x $exec ] || which $exec >/dev/null; then
+          eval $exec "$@" && break || echo "(i) Trying alternative: $exec..."
         fi
       done
     }
     swapoff() {
-      for exec in /data/adb/vr25/bin/swapoff /system/*bin/swapoff /sbin/swapoff "busybox swapoff"; do
-        if [ -x ${exec%% *} ] || which ${exec%% *} >/dev/null; then
-          eval $exec "$@" && break || echo "(i) Trying alternative..."
+      for exec in /data/adb/vr25/bin/swapoff /*/*bin/swapoff /sbin/swapoff swapoff; do
+        if [ -x $exec ] || which $exec >/dev/null; then
+          eval $exec "$@" && break || echo "(i) Trying alternative: $exec..."
         fi
       done
     }
     swapon() {
-      for exec in /data/adb/vr25/bin/swapon /system/*bin/swapon /sbin/swapon "busybox swapon"; do
-        if [ -x ${exec%% *} ] || which ${exec%% *} >/dev/null; then
-          eval $exec "$@" && break || echo "(i) Trying alternative..."
+      for exec in /data/adb/vr25/bin/swapon /*/*bin/swapon /sbin/swapon swapon; do
+        if [ -x $exec ] || which $exec >/dev/null; then
+          eval $exec "$@" && break || echo "(i) Trying alternative: $exec..."
         fi
       done
+    }
+    # delay initialization to override android defaults and third party tweaks
+    [ -d /sdcard/Android ] || {
+      (while [ ! -d /sdcard/Android ]; do
+        sleep 10
+        set +x
+      done)
+      sleep 90
     }
   }
 }
 
 stop_swappinessd() {
-  rm $temp_dir/*.lock 2>/dev/null
+  rm $temp_dir/*.lock 2>/dev/null && sleep 2
 }
 
 swap_off() {
@@ -123,7 +132,7 @@ swappinessd() {
   lock_file=$temp_dir/$(date +%s).lock
   touch $lock_file
   (set +x
-  exec <>/dev/null 2>&1
+  exec </dev/null >/dev/null 2>&1
   while [ -f $lock_file ]; do
     load_avg1=$(calc "$(awk '{print $1}' /proc/loadavg) * 100 / $max_comp_streams")
     if [ $load_avg1 -ge $high_load_threshold ]; then

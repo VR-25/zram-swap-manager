@@ -11,6 +11,6 @@ done
 cp -u install.sh customize.sh 2>/dev/null
 cp -u install.sh META-INF/com/google/android/update-binary 2>/dev/null
 
-filename=zsm-$(date +%Y.%m.%d.%H.%M.%S).zip
+filename=zsm_magisk_$(date +%Y-%m-%d_%H:%M:%S).zip
 echo $filename
 zip -r9 $filename * .git* -x \*.zip -x .git/\* -x '_*/*'

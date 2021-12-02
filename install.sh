@@ -20,7 +20,7 @@ patch_cfg() {
       if [ $config_ver -lt 0202110290 ]; then
         sed -i -e '1iconfig_ver=202110290\n' -e '/^comp_a/s/=.*/=auto/' -e '/^vm=/s/e=200\"/e=200 page-cluster=0\"/' $cfg
       fi
-      [ $config_ver -lt 0202111230 ] && sed -i -e '/^config_ver=/s/=.*/=202111230/' -e 's/ vfs_cache_pressure=200//' $cfg
+      [ $config_ver -lt 0202112020 ] && sed -i -e '/^config_ver=/s/=.*/=202112020/' -e 's/ vfs_cache_pressure=200//' $cfg
     fi
   else
     install -m 644 $src/zram-swap-manager.conf $cfg

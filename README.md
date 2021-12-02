@@ -43,7 +43,7 @@
 ## Default Config
     config_ver=202111230 # used for patching; do not modify!
 
-    comp_algorithm=auto # [auto] -> zstd (288) | lz4 (210) | lzo-rle (212) | lzo (2011)
+    comp_algorithm=auto # [auto] -> zstd (288) | lz4 (210) | lzo-rle (212) | lzo (211)
     comp_ratio=210 # [210], irrelevant when comp_algorithm=auto
     mem_percent=33 # [33], memory limit
 
@@ -76,8 +76,14 @@
 |   snappy 1.1.4   | 2.091	|   530 MB/s	|   1800 MB/s   |
 |    lzf 3.6 -1	   | 2.077	|   400 MB/s	|   860 MB/s    |
 
-## Donations
-- [Airtm, username: ivandro863auzqg](https://app.airtm.com/send-or-request/send)
-- [Liberapay](https://liberapay.com/vr25/)
-- [Patreon](https://patreon.com/vr25/)
-- [PayPal or Credit/Debit Card](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=iprj25@gmail.com&lc=US&item_name=VR25+is+creating+free+and+open+source+software.+Donate+to+suppport+their+work.&no_note=0&cn=&currency_code=USD&bn=PP-DonationsBF:btn_donateCC_LG.gif:NonHosted)
+## Links
+
+- [Donate - Airtm, username: ivandro863auzqg](https://app.airtm.com/send-or-request/send)
+- [Donate - Liberapay](https://liberapay.com/vr25)
+- [Donate - Patreon](https://patreon.com/vr25)
+- [Donate - PayPal or Credit/Debit Card](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=iprj25@gmail.com&lc=US&item_name=VR25+is+creating+free+and+open+source+software.+Donate+to+suppport+their+work.&no_note=0&cn=&currency_code=USD&bn=PP-DonationsBF:btn_donateCC_LG.gif:NonHosted)
+- [Facebook Page](https://fb.me/vr25xda)
+- [Telegram Channel](https://t.me/vr25_xda)
+- [Telegram Profile](https://t.me/vr25xda)
+- [Upstream Repository](https://github.com/vr-25/zram-swap-manager)
+- [XDA Thread](https://forum.xda-developers.com/t/zram-swap-manager-for-android-and-gnu-linux-systems.4352797)
