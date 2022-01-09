@@ -1,9 +1,9 @@
 #!/usr/bin/env sh
 
-version="v2021.12.2 (202112020)"
+version="v2022.1.9 (202201090)"
 info="zRAM Swap Manager $version
 Upstream repo: github.com/vr-25/zram-swap-manager
-Copyright (C) 2021, VR25
+Copyright (C) 2021-2022, VR25
 License: GPLv3+"
 
 IFS="$(printf ' \t\n')"
@@ -73,14 +73,6 @@ prep_exec() {
           eval $exec "$@" && break || echo "(i) Trying alternative: $exec..."
         fi
       done
-    }
-    # delay initialization to override android defaults and third party tweaks
-    [ -d /sdcard/Android ] || {
-      (while [ ! -d /sdcard/Android ]; do
-        sleep 10
-        set +x
-      done)
-      sleep 90
     }
   }
 }

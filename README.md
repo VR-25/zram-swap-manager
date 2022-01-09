@@ -8,7 +8,7 @@
     The more advanced users will probably want to tweak a thing or two.
 
 ## License
-    Copyright (C) 2021, VR25
+    Copyright (C) 2021-2022, VR25
 
     This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 
@@ -75,6 +75,10 @@
 |    lz4 1.8.1	   | 2.101  |   750 MB/s  |   3700 MB/s   |
 |   snappy 1.1.4   | 2.091	|   530 MB/s	|   1800 MB/s   |
 |    lzf 3.6 -1	   | 2.077	|   400 MB/s	|   860 MB/s    |
+
+
+## Notes/Tips
+    On some Android systems, one may want to delay initialization to ensure defaults and/or third party tweaks are overridden. This can be done by adding `sleep 90` or a more elaborate logic to config.
 
 ## Links
 
