@@ -148,6 +148,7 @@ trap 'e=$?; echo; exit $e' EXIT
 # verbose
 case $1 in
   -d*)
+    shift
     [ -n "$LINENO" ] && export PS4='$LINENO: '
     set -x
   ;;
