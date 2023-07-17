@@ -1,21 +1,33 @@
-[ -x /dev/.vr25/busybox/ls ] || {
-  mkdir -p /dev/.vr25/busybox
-  chmod 0700 /dev/.vr25/busybox
-  if [ -f /data/adb/vr25/bin/busybox ]; then
-    [ -x /data/adb/vr25/bin/busybox ] || chmod -R 0700 /data/adb/vr25/bin
-    /data/adb/vr25/bin/busybox --install -s /dev/.vr25/busybox
-  elif [ -f /data/adb/magisk/busybox ]; then
-    [ -x /data/adb/magisk/busybox ] || chmod 0700 /data/adb/magisk/busybox
-    /data/adb/magisk/busybox --install -s /dev/.vr25/busybox
-  elif which busybox > /dev/null; then
-    eval "$(which busybox) --install -s /dev/.vr25/busybox"
-  else
-    echo "(!) Install busybox or simply place it in /data/adb/vr25/bin/"
+# Busybox Setup
+# Copyright 2019-2023, VR25
+# License: GPLv3+
+#
+# Usage: . $0
+
+
+bin_dir=/data/adb/vr25/bin
+busybox_dir=/dev/.vr25/busybox
+magisk_busybox="/data/adb/ksu/bin/busybox /data/adb/magisk/busybox"
+
+[ -x $busybox_dir/ls ] || {
+  mkdir -p $busybox_dir
+  chmod 0755 $busybox_dir $bin_dir/busybox 2>/dev/null || :
+  for f in $bin_dir/busybox $magisk_busybox /system/*bin/busybox*; do
+    [ ! -f $f ] || {
+      $f --install -s $busybox_dir/
+      break
+    }
+  done
+  [ -x $busybox_dir/ls ] || {
+    echo "Install busybox or simply place it in $bin_dir/"
+    echo
     exit 3
-  fi
+  }
 }
 
 case $PATH in
-  /data/adb/vr25/bin:*) :;;
-  *) export PATH=/data/adb/vr25/bin:/dev/.vr25/busybox:$PATH;;
+  $bin_dir:*) ;;
+  *) export PATH="$bin_dir:$busybox_dir:$PATH";;
 esac
+
+unset f bin_dir busybox_dir magisk_busybox

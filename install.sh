@@ -74,8 +74,17 @@ if [ -d /data/adb ]; then
 
   patch_cfg
 
-  chmod +x $install_dir/*.sh
+  chmod 0755 $install_dir/*.sh
   [ ".$1" != .--start ] || $install_dir/service.sh
+
+  # KernelSu support
+  if ${KSU:-false} || [ -f /data/adb/ksu/bin/busybox ]; then
+    up_dir=/data/adb/modules_update/zram-swap-manager
+    mkdir -p $up_dir
+    cp -a $install_dir/* $up_dir/
+    touch $install_dir/update
+  fi
+
 
 else
 
