@@ -1,5 +1,5 @@
 #!/system/bin/sh
-log=/dev/.vr25/zram-swap-manager/service.log
+log=/data/adb/vr25/zram-swap-manager-data/logs/service.log
 mkdir -p ${log%/*}
-/data/adb/modules/zram-swap-manager/zram-swap-manager.sh -dr > $log 2>&1
+${0%/*}/zram-swap-manager.sh -dr > $log 2>&1
 exit 0

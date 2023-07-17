@@ -1,9 +1,9 @@
 #!/usr/bin/env sh
 
-version="v2022.1.9 (202201090)"
+version="v2023.7.17 (202307170)"
 info="zRAM Swap Manager $version
 Upstream repo: github.com/vr-25/zram-swap-manager
-Copyright (C) 2021-2022, VR25
+Copyright (C) 2021-2023, VR25
 License: GPLv3+"
 
 IFS="$(printf ' \t\n')"
@@ -54,21 +54,21 @@ mem_estimates() {
 prep_exec() {
   [ -d /data/adb ] && {
     mkswap() {
-      for exec in /data/adb/vr25/bin/mkswap /*/*bin/mkswap /sbin/mkswap mkswap; do
+      for exec in /data/adb/vr25/bin/mkswap /vendor/bin/mkswap /*/*bin/mkswap /sbin/mkswap mkswap; do
         if [ -x $exec ] || which $exec >/dev/null; then
           eval $exec "$@" && break || echo "(i) Trying alternative: $exec..."
         fi
       done
     }
     swapoff() {
-      for exec in /data/adb/vr25/bin/swapoff /*/*bin/swapoff /sbin/swapoff swapoff; do
+      for exec in /data/adb/vr25/bin/swapoff /vendor/bin/swapoff /*/*bin/swapoff /sbin/swapoff swapoff; do
         if [ -x $exec ] || which $exec >/dev/null; then
           eval $exec "$@" && break || echo "(i) Trying alternative: $exec..."
         fi
       done
     }
     swapon() {
-      for exec in /data/adb/vr25/bin/swapon /*/*bin/swapon /sbin/swapon swapon; do
+      for exec in /data/adb/vr25/bin/swapon /vendor/bin/swapon /*/*bin/swapon /sbin/swapon swapon; do
         if [ -x $exec ] || which $exec >/dev/null; then
           eval $exec "$@" && break || echo "(i) Trying alternative: $exec..."
         fi
@@ -107,7 +107,8 @@ swap_on() {
       *lzo*) comp_algorithm=lzo; comp_ratio=211;;
     esac
   }
-  for j in max_comp_streams comp_algorithm disksize mem_limit; do
+  # mem_limit is disabled due to issues on certain kernels
+  for j in max_comp_streams comp_algorithm disksize _mem_limit; do
     eval write /sys/block/zram$i/$j \$$j
   done
   mkswap $swap_device$i
@@ -175,7 +176,7 @@ done
 # default settings
 
 : ${comp_algorithm:=auto}
-: ${comp_ratio:=210}
+: ${comp_ratio:=288}
 : ${mem_percent:=33}
 
 : ${mem_total:=$(awk '/^MemTotal:/{print $2}' /proc/meminfo)}
@@ -194,7 +195,7 @@ done
 : ${low_load_threshold:=0}
 : ${low_load_swappiness:=100}
 
-: ${vm:=swappiness=80 page-cluster=0}
+: ${vm:=swappiness=85 page-cluster=0}
 
 case $1 in
   -*c) shift; edit_config "$@";;

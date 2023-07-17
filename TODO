@@ -8,3 +8,22 @@ Android LMK Presets
     empty_apps
   Formulas
     1 MB = 256 units
+
+write /sys/module/lowmemorykiller/parameters/minfree "coma-separated values, multiplied by 256"
+
+
+minfree() {
+  local file=/sys/module/lowmemorykiller/parameters/minfree
+  local minfree=$(($1 * 256))
+  shift
+  [ $# = 5 ] || return 1
+  while [ -n "${1-}" ]; do
+    minfree=$minfree,$(($1 * 256))
+    shift
+  done
+  chmod +w $file
+  echo $minfree > $file
+}
+
+# Usage: minfree <space separated megabyte values>
+# foreground_apps visible_apps secondary_server hidden_apps content_providers empty_apps

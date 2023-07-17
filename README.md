@@ -3,12 +3,12 @@
 ## Foreword
     This program comes with absolutely no warranty.
     Use it at your own risk.
-    Refer to the official kernel docs, ArchWiki and/or other reputable sources for information regarding VM configuration, zRAM, zswap and swap in general.
-    Many users should be served by the default config.
-    The more advanced users will probably want to tweak a thing or two.
+    Refer to the official kernel docs, ArchWiki and/or other reputable sources for information regarding virtual memory configuration, zRAM, zswap, and swap in general.
+    Most users should be served by the default config.
+    Advanced users will probably want to tweak a thing or two.
 
 ## License
-    Copyright (C) 2021-2022, VR25
+    Copyright (C) 2021-2023, VR25
 
     This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 
@@ -41,10 +41,10 @@
       /etc/zram-swap-manager.conf
 
 ## Default Config
-    config_ver=202111230 # used for patching; do not modify!
+    config_ver=XXXXXXXXX # used for patching; do not modify!
 
     comp_algorithm=auto # [auto] -> zstd (288) | lz4 (210) | lzo-rle (212) | lzo (211)
-    comp_ratio=210 # [210], irrelevant when comp_algorithm=auto
+    comp_ratio=288 # [210], irrelevant when comp_algorithm=auto
     mem_percent=33 # [33], memory limit
 
     dynamic_swappiness=true # [true], swappiness <--> /proc/loadavg
@@ -56,10 +56,9 @@
     low_load_threshold=0 # [0], %
     low_load_swappiness=100 # [100]
 
-    vm="swappiness=80 page-cluster=0"
+    vm="swappiness=85 page-cluster=0"
 
-    # android's low memory killer (deprecated in favor of lmkd in recent OS versions)
-    # write /sys/module/lowmemorykiller/parameters/minfree "CUSTOM PARAMETERS GO HERE"
+    Note: One can set disksize instead of comp_ratio and mem_percent. It supports suffixes, as per the official kernel doc (e.g., disksize=1M, disksize=2G).
 
 ## Terminal
     Run zsm or zram-swap-manager for help.
@@ -76,9 +75,10 @@
 |   snappy 1.1.4   | 2.091	|   530 MB/s	|   1800 MB/s   |
 |    lzf 3.6 -1	   | 2.077	|   400 MB/s	|   860 MB/s    |
 
-
 ## Notes/Tips
-    On some Android systems, one may want to delay initialization to ensure defaults and/or third party tweaks are overridden. This can be done by adding `sleep 90` or a more elaborate logic to config.
+    - On some Android systems, one may want to delay initialization to ensure defaults and/or third party tweaks are overridden. This can be done by adding `sleep 90` or a more elaborate logic to config.
+    - To disable swap on boot, add "swap_off; exit" to config, without quotes.
+    - To skip applying settings on boot add exit to config.
 
 ## Links
 
