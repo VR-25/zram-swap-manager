@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/sbin/sh
 
 [ $(id -u) -eq 0 ] || {
   printf "\n(!) must run as root\n\n"
