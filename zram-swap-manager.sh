@@ -40,6 +40,12 @@ hot_remove() {
 }
 
 mem_estimates() {
+  case $disksize in
+    *[kK]) disksize=$(calc "${disksize%?} * 1024");;
+    *[mM]) disksize=$(calc "${disksize%?} * 1024 * 1024");;
+    *[gG]) disksize=$(calc "${disksize%?} * 1024 * 1024 * 1024");;
+    *[tT]) disksize=$(calc "${disksize%?} * 1024 * 1024 * 1024 * 1024");;
+  esac
   total_mem_before=$(calc "$mem_total / 1024")
   net_gain=$(calc "(($disksize - $mem_limit) / 1024) / 1024")
   total_mem_now=$(calc "$total_mem_before + $net_gain")
