@@ -1,7 +1,8 @@
 author=VR25
-description=
+description=A versatile zRAM swap manager with dynamic swappiness - for Android and GNU/Linux systems.
 domain=vr25
 id=zram-swap-manager
 name=zRAM Swap Manager
-version=
-versionCode=
+version=v2023.7.17
+versionCode=202307170
+updateJson=https://raw.githubusercontent.com/VR-25/zram-swap-manager/master/module.json
