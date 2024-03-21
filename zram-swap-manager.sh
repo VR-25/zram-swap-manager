@@ -60,21 +60,21 @@ mem_estimates() {
 prep_exec() {
   [ -d /data/adb ] && {
     mkswap() {
-      for exec in /data/adb/vr25/bin/mkswap /vendor/bin/mkswap /*/*bin/mkswap /sbin/mkswap mkswap; do
+      for exec in /data/adb/vr25/bin/mkswap /vendor/bin/mkswap /*/*bin/mkswap /sbin/mkswap; do
         if [ -x $exec ] || which $exec >/dev/null; then
           eval $exec "$@" && break || echo "(i) Trying alternative: $exec..."
         fi
       done
     }
     swapoff() {
-      for exec in /data/adb/vr25/bin/swapoff /vendor/bin/swapoff /*/*bin/swapoff /sbin/swapoff swapoff; do
+      for exec in /data/adb/vr25/bin/swapoff /vendor/bin/swapoff /*/*bin/swapoff /sbin/swapoff; do
         if [ -x $exec ] || which $exec >/dev/null; then
           eval $exec "$@" && break || echo "(i) Trying alternative: $exec..."
         fi
       done
     }
     swapon() {
-      for exec in /data/adb/vr25/bin/swapon /vendor/bin/swapon /*/*bin/swapon /sbin/swapon swapon; do
+      for exec in /data/adb/vr25/bin/swapon /vendor/bin/swapon /*/*bin/swapon /sbin/swapon; do
         if [ -x $exec ] || which $exec >/dev/null; then
           eval $exec "$@" && break || echo "(i) Trying alternative: $exec..."
         fi
