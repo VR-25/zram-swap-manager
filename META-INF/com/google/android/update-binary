@@ -43,26 +43,34 @@ if [ -d /data/adb ]; then
 
   . $src/busybox.sh
 
-  install_dir=/data/adb/modules/zram-swap-manager
+  if ${KSU:-false} || [ -f /data/adb/ksu/bin/busybox ]; then
+    install_dir=/data/adb/modules_update/zram-swap-manager
+    install_dir0=/data/adb/modules/zram-swap-manager
+    mkdir -p $install_dir0
+    cp $src/module.prop $install_dir0/
+    touch $install_dir0/update
+    SKIPMOUNT=false
+  else
+    install_dir=/data/adb/modules/zram-swap-manager
+  fi
+
   data_dir=/data/adb/vr25/zram-swap-manager-data
   cfg=/data/adb/vr25/zram-swap-manager-data/config.txt
 
   rm -rf $install_dir 2>/dev/null
   mkdir -p $install_dir/system/bin $data_dir
 
-  cp $src/zram-swap-manager.sh $install_dir/
-    ln -sf $install_dir/zram-swap-manager.sh $install_dir/system/bin/zram-swap-manager
-      ln -sf $install_dir/zram-swap-manager.sh $install_dir/system/bin/zsm
-    ln -sf $install_dir/zram-swap-manager.sh /sbin/zram-swap-manager 2>/dev/null \
-      && ln -sf $install_dir/zram-swap-manager.sh /sbin/zsm
+  for i in $install_dir/system/bin/zram-swap-manager $install_dir/system/bin/zsm /sbin/zram-swap-manager /sbin/zsm; do
+    cp -f $src/zram-swap-manager.sh $i 2>/dev/null
+  done
 
   [ -f $data_dir/config.txt ] || cp $src/zram-swap-manager.conf $data_dir/config.txt
 
-  cp $src/uninstall.sh $install_dir/
-    ln -sf $install_dir/uninstall.sh $install_dir/system/bin/zram-swap-manager-uninstall
-    ln -sf $install_dir/uninstall.sh /sbin/zram-swap-manager-uninstall 2>/dev/null
+  for i in $install_dir/system/bin/zram-swap-manager-uninstall /sbin/zram-swap-manager-uninstall; do
+    cp -f $src/uninstall.sh $i 2>/dev/null
+  done
 
-  for i in $install_dir/*.sh; do
+  for i in $install_dir/*.sh $install_dir/system/bin/* /sbin/zram-swap-manager /sbin/zsm; do
     sed -i 's|^#!/.*|#!/system/bin/sh|' $i
   done
 
@@ -74,17 +82,8 @@ if [ -d /data/adb ]; then
 
   patch_cfg
 
-  chmod 0755 $install_dir/*.sh
+  chmod 0755 -R $install_dir/*.sh $install_dir/system /sbin/zram-* /sbin/zsm 2>/dev/null
   [ ".$1" != .--start ] || $install_dir/service.sh
-
-  # KernelSu support
-  if ${KSU:-false} || [ -f /data/adb/ksu/bin/busybox ]; then
-    up_dir=/data/adb/modules_update/zram-swap-manager
-    mkdir -p $up_dir
-    cp -a $install_dir/* $up_dir/
-    touch $install_dir/update
-  fi
-
 
 else
 
@@ -99,7 +98,7 @@ else
   install -m 644 $src/zram-swap-manager.service /etc/systemd/system/zram-swap-manager.service
 
   install -m 755 $src/zram-swap-manager.sh /usr/local/bin/zram-swap-manager
-    ln -s /usr/local/bin/zram-swap-manager /usr/local/bin/zsm
+  ln -s /usr/local/bin/zram-swap-manager /usr/local/bin/zsm
 
   ${upgrade:-false} || patch_cfg r
   install -m 755 $src/uninstall.sh /usr/local/bin/zram-swap-manager-uninstall
