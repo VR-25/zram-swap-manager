@@ -21,7 +21,7 @@ edit_config() {
   if [ -n "$1" ]; then
     eval "$* $config"
   else
-    for i in $EDITOR vim vi nano; do
+    for i in $EDITOR nano vim vi; do
       which ${i%% *} >/dev/null && {
         eval "$i $config"
         break
@@ -219,7 +219,7 @@ Options:
 
 -d[opt]  verbose (set -x)
 
--c       edit config w/ \"\$@\" | \$EDITOR | vim | vi | nano
+-c       edit config w/ \"\$@\" | \$EDITOR | nano | vim | vi
 -e       memory estimates
 -n       swap_on
 -f       swap_off
