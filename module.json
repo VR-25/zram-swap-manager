@@ -1,8 +1,7 @@
 {
     "busybox": "https://github.com/Magisk-Modules-Repo/busybox-ndk",
     "changelog": "https://raw.githubusercontent.com/VR-25/zram-swap-manager/master/changelog.md",
-    "curl": "https://github.com/Zackptg5/Cross-Compiled-Binaries-Android/tree/master/curl",
-    "version": "v2023.7.17",
-    "versionCode": 202307170,
-    "zipUrl": "https://github.com/VR-25/zram-swap-manager/releases/download/v2023.7.17/zsm_android_2023-07-17_19.26.51.zip"
+    "version": "v2024.12.15",
+    "versionCode": 202412150,
+    "zipUrl": "https://github.com/VR-25/zram-swap-manager/releases/download/v2024.12.15/zsm_android_2024-12-15_10.30.42.zip"
 }
