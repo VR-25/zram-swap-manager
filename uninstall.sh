@@ -6,6 +6,7 @@
 }
 
 exec 2>/dev/null
+rm /dev/.vr25/zram-swap-manager/*.lock
 
 case "$*" in
   *--stop*)

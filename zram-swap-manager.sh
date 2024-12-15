@@ -1,15 +1,17 @@
 #!/usr/bin/env sh
 
-version="v2023.7.17 (202307170)"
+version="v2024.12.15 (202412150)"
 info="zRAM Swap Manager $version
 Upstream repo: github.com/vr-25/zram-swap-manager
-Copyright (C) 2021-2023, VR25
+Copyright (C) 2021-2024, VR25
 License: GPLv3+"
 
 IFS="$(printf ' \t\n')"
 temp_dir=/dev/.vr25/zram-swap-manager
 magisk_mod=/data/adb/modules/zram-swap-manager
 mod_data=/data/adb/vr25/zram-swap-manager-data
+sd_lock=$temp_dir/sd_$(date +%s).lock
+vmd_lock=$temp_dir/vmd_$(date +%s).lock
 
 calc() {
   awk "BEGIN {print $*}" | xargs printf %.f
@@ -40,55 +42,59 @@ hot_remove() {
 }
 
 mem_estimates() {
-  case $disksize in
-    *[kK]) disksize=$(calc "${disksize%?} * 1024");;
-    *[mM]) disksize=$(calc "${disksize%?} * 1024 * 1024");;
-    *[gG]) disksize=$(calc "${disksize%?} * 1024 * 1024 * 1024");;
-    *[tT]) disksize=$(calc "${disksize%?} * 1024 * 1024 * 1024 * 1024");;
-  esac
-  total_mem_before=$(calc "$mem_total / 1024")
-  net_gain=$(calc "(($disksize - $mem_limit) / 1024) / 1024")
-  total_mem_now=$(calc "$total_mem_before + $net_gain")
-  net_gain_percent=$(calc "$net_gain * 100 / $total_mem_before")
-  printf "Memory Estimates
-  Without zRAM:\t${total_mem_before} MB
-  With zRAM:\t${total_mem_now} MB
-  Net Gain:\t${net_gain} MB ($net_gain_percent%s)\n" %
-  unset total_mem_before total_mem_now net_gain net_gain_percent
+  zramctl ${swap_device}* 2>/dev/null || {
+    case $disksize in
+      *[kK]) disksize=$(calc "${disksize%?} * 1024");;
+      *[mM]) disksize=$(calc "${disksize%?} * 1024 * 1024");;
+      *[gG]) disksize=$(calc "${disksize%?} * 1024 * 1024 * 1024");;
+      *[tT]) disksize=$(calc "${disksize%?} * 1024 * 1024 * 1024 * 1024");;
+    esac
+    total_mem_before=$(calc "$mem_total / 1024")
+    net_gain=$(calc "(($disksize - $mem_limit) / 1024) / 1024")
+    total_mem_now=$(calc "$total_mem_before + $net_gain")
+    net_gain_percent=$(calc "$net_gain * 100 / $total_mem_before")
+    printf "Memory Estimates
+    Without zRAM:\t${total_mem_before} MB
+    With zRAM:\t${total_mem_now} MB
+    Net Gain:\t${net_gain} MB ($net_gain_percent%s)\n" %
+    unset total_mem_before total_mem_now net_gain net_gain_percent
+  }
 }
 
 prep_exec() {
   [ -d /data/adb ] && {
     mkswap() {
-      for exec in /data/adb/vr25/bin/mkswap /vendor/bin/mkswap /*/*bin/mkswap /sbin/mkswap mkswap; do
-        if [ -x $exec ] || which $exec >/dev/null; then
+      for exec in /data/adb/vr25/bin/mkswap /vendor/bin/mkswap /*/*bin/mkswap /sbin/mkswap; do
+        [ -x $exec ] && {
           eval $exec "$@" && break || echo "(i) Trying alternative: $exec..."
-        fi
+        }
       done
     }
     swapoff() {
-      for exec in /data/adb/vr25/bin/swapoff /vendor/bin/swapoff /*/*bin/swapoff /sbin/swapoff swapoff; do
-        if [ -x $exec ] || which $exec >/dev/null; then
+      for exec in /data/adb/vr25/bin/swapoff /vendor/bin/swapoff /*/*bin/swapoff /sbin/swapoff; do
+        [ -x $exec ] && {
           eval $exec "$@" && break || echo "(i) Trying alternative: $exec..."
-        fi
+        }
       done
     }
     swapon() {
-      for exec in /data/adb/vr25/bin/swapon /vendor/bin/swapon /*/*bin/swapon /sbin/swapon swapon; do
-        if [ -x $exec ] || which $exec >/dev/null; then
+      for exec in /data/adb/vr25/bin/swapon /vendor/bin/swapon /*/*bin/swapon /sbin/swapon; do
+        [ -x $exec ] && {
           eval $exec "$@" && break || echo "(i) Trying alternative: $exec..."
-        fi
+        }
       done
     }
+    unset exec
   }
 }
 
 stop_swappinessd() {
-  rm $temp_dir/*.lock 2>/dev/null && sleep 2
+  rm $temp_dir/sd_*.lock 2>/dev/null
 }
 
 swap_off() {
   stop_swappinessd
+  rm $temp_dir/vmd_*.lock 2>/dev/null
   for i in ${swap_device}*; do
     [ -b $i ] || continue
     swapoff $i
@@ -99,40 +105,49 @@ swap_off() {
     swapoff $i
   done
   unset i
+  write /sys/module/zswap/parameters/enabled 1
 }
 
 swap_on() {
   i=$(hot_add)
   write /sys/module/zswap/parameters/enabled 0
   modprobe zram num_devices=1 2>/dev/null
-  grep -q $comp_algorithm /sys/block/zram$i/comp_algorithm || {
+  if [ -f /sys/block/zram$i/comp_algorithm ] \
+    && ! grep -q $comp_algorithm /sys/block/zram$i/comp_algorithm 2>/dev/null
+  then
     case "$(cat /sys/block/zram$i/comp_algorithm)" in
-      *zstd*) comp_algorithm=zstd; comp_ratio=288;;
-      *lz4*) comp_algorithm=lz4; comp_ratio=210;;
-      *lzo-rle*) comp_algorithm=lzo-rle; comp_ratio=212;;
-      *lzo*) comp_algorithm=lzo; comp_ratio=211;;
+      *zstd*) comp_algorithm=zstd; comp_ratio=337;;
+      *lz4*) comp_algorithm=lz4; comp_ratio=263;;
+      *lzo-rle*) comp_algorithm=lzo-rle; comp_ratio=274;;
+      *lzo*) comp_algorithm=lzo; comp_ratio=277;;
     esac
-  }
-  # mem_limit is disabled due to issues on certain kernels
+  fi
+  # mem_limit is disabled due to issues on old kernels
   for j in max_comp_streams comp_algorithm disksize _mem_limit; do
     eval write /sys/block/zram$i/$j \$$j
   done
   mkswap $swap_device$i
   swapon $swap_device$i
-  for i in $vm; do
-    [ -f /proc/sys/vm/${i%=*} ] && [ -n "${i#*=}" ] && write /proc/sys/vm/${i%=*} ${i#*=}
-  done
+  touch $vmd_lock
+  (set +x
+  exec </dev/null >/dev/null 2>&1
+  while [ -f $vmd_lock ]; do
+    for i in $vm; do
+      [ -f /proc/sys/vm/${i%=*} ] && [ -n "${i#*=}" ] \
+        && write /proc/sys/vm/${i%=*} ${i#*=}
+    done
+    sleep 10
+  done) &
   unset i j
   ! $dynamic_swappiness || swappinessd
 }
 
 swappinessd() {
   stop_swappinessd
-  lock_file=$temp_dir/$(date +%s).lock
-  touch $lock_file
+  touch $sd_lock
   (set +x
   exec </dev/null >/dev/null 2>&1
-  while [ -f $lock_file ]; do
+  while [ -f $sd_lock ]; do
     load_avg1=$(calc "$(awk '{print $1}' /proc/loadavg) * 100 / $max_comp_streams")
     if [ $load_avg1 -ge $high_load_threshold ]; then
       write /proc/sys/vm/swappiness $high_load_swappiness
