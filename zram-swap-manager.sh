@@ -168,21 +168,21 @@ esac
 mkdir -p $temp_dir
 
 # load user config
-for i in "${0}.conf" /etc/zram-swap-manager.conf \
-  $mod_data/config.txt
-do
+for i in "${0}.conf" /etc/zram-swap-manager.conf $mod_data/config.txt; do
   [ -f "$i" ] && {
     . "$i"
     break
   }
 done
+unset i
 
 [ -f $magisk_mod/busybox.sh ] && . $magisk_mod/busybox.sh
 
 # default settings
 
 : ${comp_algorithm:=auto}
-: ${comp_ratio:=288}
+: ${comp_ratio:=277}
+[ $comp_algorithm = auto ] && comp_algorithm=277
 : ${mem_percent:=33}
 
 : ${mem_total:=$(awk '/^MemTotal:/{print $2}' /proc/meminfo)}
@@ -201,7 +201,7 @@ done
 : ${low_load_threshold:=0}
 : ${low_load_swappiness:=100}
 
-: ${vm:=swappiness=85 page-cluster=0}
+: ${vm:=page-cluster=0 swappiness=85 watermark_boost_factor=0 watermark_scale_factor=125}
 
 case $1 in
   -*c) shift; edit_config "$@";;
