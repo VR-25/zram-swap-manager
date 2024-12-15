@@ -207,7 +207,7 @@ unset i
 : ${max_comp_streams:=$(( $(cut -d- -f2 /sys/devices/system/cpu/present) + 1 ))}
 : ${swap_device:=$([ -d /data/adb ] && echo /dev/block/zram || echo /dev/zram)}
 
-: ${dynamic_swappiness:=true}
+: ${dynamic_swappiness:=false}
 : ${load_sampling_rate:=60}
 : ${high_load_threshold:=90}
 : ${high_load_swappiness:=80}
