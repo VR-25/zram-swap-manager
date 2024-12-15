@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
-version="v2024.12.15 (202412150)"
+version="v2024.12.15.1 (202412151)"
 info="zRAM Swap Manager $version
 Upstream repo: github.com/vr-25/zram-swap-manager
 Copyright (C) 2021-2024, VR25

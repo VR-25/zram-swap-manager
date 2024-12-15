@@ -1,3 +1,8 @@
+**v2024.12.15.1 (202412151)**
+- Fix typos
+- Print changelog after installation & don't overwrite config
+- Set default dynamic_swappiness=false
+
 **v2024.12.15 (202412150)**
 - [Android]: Wait for boot_completed
 - Add vm daemon to enforce vm tweaks
@@ -16,11 +21,3 @@
 - KernelSu support
 - Updated documentation
 - Various fixes & optimizations
-
-**v2022.3.8 (202203080)**
-- Disable dynamic_swappiness on Android by default (misleading /proc/loadavg);
-- Do not set mem_limit (causes lockup issues in some kernels);
-- Updated documentation and default config.
-
-**v2022.1.9 (202201090)**
-- [Android] Do not delay initialization by default.

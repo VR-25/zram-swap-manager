@@ -65,5 +65,5 @@
 - [XDA Thread](https://forum.xda-developers.com/t/zram-swap-manager-for-android-and-gnu-linux-systems.4352797)
 
 - [Donate - Patreon](https://patreon.com/vr25)
-- [Donate - PayPal] (https://paypal.me/vr25xda)
+- [Donate - PayPal](https://paypal.me/vr25xda)
 - [Donate - Credit/Debit Card](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=iprj25@gmail.com&lc=US&item_name=VR25+is+creating+free+and+open+source+software.+Donate+to+suppport+their+work.&no_note=0&cn=&currency_code=USD&bn=PP-DonationsBF:btn_donateCC_LG.gif:NonHosted)
